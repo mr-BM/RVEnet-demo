@@ -141,9 +141,10 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     for cycle_idx in range(nbr_valid_cycles):
 
         sampled_indexes = np.arange(start_index, (cycle_idx+1)*int(len_of_heart_cycle), sampling_frequency)
+        start_index = sampled_indexes[-1] + sampling_frequency
         sampled_indexes = list([int(i) for i in sampled_indexes])
 
-        start_index = sampled_indexes[-1] + sampling_frequency
+        
         
         selected_frames = [cropped_frames[i] for i in sampled_indexes]
 
@@ -166,7 +167,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
 
         # ToTensor
         frames_tensor = np.array(frames_3ch)
-        print(frames_tensor.shape)
+        #print(frames_tensor.shape)
         frames_tensor = frames_tensor.transpose((0, 3, 1, 2))
         binary_mask_tensor = np.array(resized_binary_mask)
         frames_tensor = torch.from_numpy(frames_tensor)
