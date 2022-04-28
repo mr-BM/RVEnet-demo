@@ -140,9 +140,12 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
 
     for cycle_idx in range(nbr_valid_cycles):
 
-        sampled_indexes = np.arange(start_index, (cycle_idx+1)*int(len_of_heart_cycle), sampling_frequency)
+        sampled_indexes = np.arange(start_index, (cycle_idx+1)* len_of_heart_cycle, sampling_frequency)
         start_index = sampled_indexes[-1] + sampling_frequency
         sampled_indexes = list([int(i) for i in sampled_indexes])
+        
+        if len(sampled_indexes)>num_of_images:
+            sampled_indexes = sampled_indexes[:-1]
 
         
         
