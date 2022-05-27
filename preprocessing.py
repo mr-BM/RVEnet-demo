@@ -13,6 +13,13 @@ from skimage import transform
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
+def round_numeric_error(num, eps=0.005):
+    
+    if abs(round(num)-num)<eps:
+        return round(num)
+    
+    return num
+
 def normalize_image_data(tensor_frames, normalization_values):
 
     average = normalization_values[0]
@@ -36,9 +43,9 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     start_time = time.time()
     print('Preprocessing ' + path + '...', end='')
 
-    min_frame_number = 40
+    min_frame_number = 20
     min_heart_rate = 30
-    max_heart_rate = 150
+    max_heart_rate = 160
     num_of_images = 20
 
     avg = 25.44
@@ -46,6 +53,10 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
 
     # Load data from DICOM file
     dataset = pydicom.dcmread(path, force=True)
+
+    if len(dataset.pixel_array.shape)==3:
+        print("Dicom has only a single image. It won't be processed.")
+        
 
     # Convert frames to grayscale frames
     gray_frames = np.zeros(dataset.pixel_array.shape)
@@ -129,9 +140,9 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     len_of_dicom = len(dataset.pixel_array)
     if len_of_dicom < min_frame_number:
         raise ValueError('Number of frames in the recording is less than 40!')
-    len_of_heart_cycle = 60 / int(heart_rate) * int(float(fps))
+    len_of_heart_cycle = int(60 / heart_rate * float(fps))
     sampling_frequency = len_of_heart_cycle / num_of_images
-    nbr_valid_cycles = int(len(cropped_frames)/len_of_heart_cycle)
+    nbr_valid_cycles = min(int(len(cropped_frames)/num_of_images), int(len(cropped_frames)/len_of_heart_cycle))
 
     # Sample frames from multiple heart cycle:
 
@@ -141,7 +152,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     for cycle_idx in range(nbr_valid_cycles):
 
         sampled_indexes = np.arange(start_index, (cycle_idx+1)* len_of_heart_cycle, sampling_frequency)
-        start_index = sampled_indexes[-1] + sampling_frequency
+        start_index = round_numeric_error(sampled_indexes[-1] + sampling_frequency)
         sampled_indexes = list([int(i) for i in sampled_indexes])
         
         if len(sampled_indexes)>num_of_images:
@@ -191,4 +202,4 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     print('done!')
     print('--- %s seconds ---' % (time.time() - start_time))
 
-    return hear_cycle_data_tensor
+    return hear_cycle_data_tensor, fps, heart_rate
