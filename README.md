@@ -49,6 +49,15 @@ Our deep learning model predicted RVEF with a mean absolute error of 5.056 perce
   - `preprocessing.py` - functions required for preprocessing
   - `license.txt` - details of the license
 
+## Usage
+
+You can try our model in the online Google Colab environment (see below), or locally on your machine using the `predict.py` script.<br>
+To run the code on your machine, you need a GPU with at least 8GB of memory. You also have to install the python packages from the `requirements.txt`.<br>
+You can find the pretrained model weights [here](https://www.dropbox.com/s/d1w0nh1rzclo4ox/full_ensemble_model.pt?dl=1).<br>
+For further information run the following command: <br>
+```
+python predict.py --help
+```  
 
 ### Running the Jupyter Notebook in Google Colab
 
