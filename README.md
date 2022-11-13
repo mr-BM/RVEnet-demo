@@ -22,7 +22,7 @@ Our deep learning pipeline was designed to analyze a DICOM file containing a 2D 
 
 Mean absolute error was used as the loss function. As the ensemble model was trained to analyze one cardiac cycle at a time, the average of the per-cardiac cycle predictions was calculated to get a single predicted RVEF value for a given video.
 
-![Schematic illustration of the network architecture](network_architecture-01.png)
+![Schematic illustration of the network architecture](imgs/network_architecture-01.png)
 <div align="center"><i><b>Figure 1</b> Schematic illustration of the network architecture</i></div>
 
 ## Datasets Used for Model Development and Evaluation
@@ -30,7 +30,7 @@ Mean absolute error was used as the loss function. As the ensemble model was tra
 
 A large single-center dataset – comprising 3,583 echocardiographic videos of 831 subjects (in DICOM format) and the corresponding labels (e.g., 3D echocardiography-derived RVEF) – was used for the training and internal validation of our model (approx. 80:20 ratio). To encourage collaborations and promote further innovation, we made this dataset publicly available (<ins>**RVENet dataset**</ins> – https://rvenet.github.io/dataset/). The performance of our model was also evaluated in an external dataset containing 1,493 videos of 365 patients.
 
-![Example videos](dicom_collage.gif)
+![Example videos](imgs/dicom_collage.gif)
 <div align="center"><i><b>Figure 2</b> Apical 4-chamber view echocardiographic videos sampled from the RVENet dataset</i></p></div>
 
 ## Performance of the Deep Learning Model
@@ -38,7 +38,7 @@ A large single-center dataset – comprising 3,583 echocardiographic videos of 8
 
 Our deep learning model predicted RVEF with a mean absolute error of 5.056 percentage points (R<sup>2</sup>=0.500) in the internal and 6.111 percentage points (R<sup>2</sup>=0.329) in the external validation set. Bland-Altman analysis showed a statistically significant but clinically negligible bias between the predicted and ground truth RVEF values in the internal dataset (bias: -0.698 percentage points, p=0.007) but no significant bias in the external dataset (bias: 0.264 percentage points, p=0.590). 
 
-![Performance of the deep learning model](model_performance-01.png)
+![Performance of the deep learning model](imgs/model_performance-01.png)
 <div align="center"><i><b>Figure 3</b> Performance of the deep learning model in the internal and external validation sets</i></div>
 
 ## Contents of the Repository
@@ -48,8 +48,6 @@ Our deep learning model predicted RVEF with a mean absolute error of 5.056 perce
   - `model.py` - model definition
   - `preprocessing.py` - functions required for preprocessing
   - `license.txt` - details of the license
-
-## Usage
 
 
 ### Running the Jupyter Notebook in Google Colab
