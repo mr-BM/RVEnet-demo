@@ -56,6 +56,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
         for i, frame in enumerate(gray_frames):
             gray_frames[i] = cv2.flip(frame, 1)
 
+    # Motion based filtering
     shape_of_frames = gray_frames.shape
     changes = np.zeros((shape_of_frames[1], shape_of_frames[2]))
     changes_frequency = np.zeros((shape_of_frames[1], shape_of_frames[2]))
@@ -80,6 +81,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
 
     nonzero_values_for_binary_mask = np.nonzero(changes)
 
+    # creating binary mask
     binary_mask[nonzero_values_for_binary_mask[0], nonzero_values_for_binary_mask[1]] += 1
     kernel = np.ones((5, 5), np.int32)
     erosion_on_binary_msk = cv2.erode(binary_mask, kernel, iterations=1)
@@ -98,12 +100,14 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
             continue
         row[ids[0]:ids[-1]] = 1
 
+    # ROI cropping
     for i in range(len(gray_frames)):
         masked_image = np.where(erosion_on_binary_msk, gray_frames[i], 0)
         cropped_image = masked_image[int(bbox.min_point.x):int(bbox.max_point.x),
                         int(bbox.min_point.y):int(bbox.max_point.y)]
         cropped_frames.append(cropped_image)
 
+    # Validating heart rate
     if pulse is not None:
         if pulse < min_heart_rate or pulse > max_heart_rate:
             raise ValueError('Heart rate is out of boundary! It should be in the {} - {} range'.format(min_heart_rate,
@@ -117,7 +121,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
             raise ValueError(
                 'Heart rate is out of boundary! It should be in the {} - {} range'.format(min_heart_rate,
                                                                                           max_heart_rate))
-
+    # Validating fps
     if fps is None:
         if hasattr(dataset, 'RecommendedDisplayFrameRate'):
             fps = dataset.RecommendedDisplayFrameRate
@@ -133,8 +137,7 @@ def get_preprocessed_frames(path, fps, pulse, orientation):
     sampling_frequency = len_of_heart_cycle / num_of_images
     nbr_valid_cycles = int(len(cropped_frames)/len_of_heart_cycle)
 
-    # Sample frames from multiple heart cycle:
-
+    # Frame sampling from multiple heart cycle
     hear_cycle_data = []
     start_index = 0
 
